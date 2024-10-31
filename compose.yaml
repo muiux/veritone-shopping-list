@@ -1,0 +1,40 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - api
+    volumes:
+      - ./frontend:/frontend
+      - /frontend/node_modules/
+
+  api:
+    build: ./api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    volumes:
+      - ./api:/api
+      - /api/node_modules/
+    environment:
+      DATABASE_HOST: db
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_NAME: shopping_list
+      DATABASE_PORT: 5432
+
+  db:
+    image: postgres
+    environment:
+      PGUSER: postgres
+      POSTGRES_DB: shopping_list
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - db_data:/var/lib/postgresql
+    ports:
+      - 5432:5432
+
+volumes:
+  db_data:
